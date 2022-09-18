@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Weather</title>  
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css" integrity="sha384-xOolHFLEh07PJGoPkLv1IbcEPTNtaed2xpHsD9ESMhqIYd0nLMwNLD69Npy4HI+N" crossorigin="anonymous">
-   <style>
+    <style>
     body{
         width: 100%;
         min-height: 100vh;
@@ -14,7 +14,7 @@
     .countries{
         padding: 30px;
         display: grid;
-        grid-template-columns: repeat(auto-fit,minmax(350px,4fr));   
+        grid-template-columns: repeat(auto-fit,minmax(350px,1fr));   
     } 
     .country{
         width: 300px;
@@ -31,25 +31,25 @@
     .search{
         margin-left: 30px;
     }
-    .counModal{
+    .weather{
         position: fixed;
         top: 0;
         left: 0;
         width: 100%;
         height: 100%; 
+        background-color: white;
     }
     .back{
         position: absolute;
         top: 3rem;
-        left: 30px ;
+        left: 30px;
     }
     .m{
         display: flex;
         justify-content: center;
         align-items: center;
         height: 100%;
-        width: 100%; 
-        background-color: white;
+        width: 100%;  
     }
     .lm{
         width: 50%;
@@ -58,69 +58,69 @@
         width: 100%;
         height: 100%;
         object-fit: cover;
+        margin-left: 30px;
     }
     .rm{
         width: 50%;
-        margin-left: 20px;
+        margin-left: 50px;
     }
     .show{
         display: none ;
     } 
    </style>
 </head>
+    
 <body> 
     <div class="jumbotron">
         <h1 style="text-align: center;">Weather App</h1>
     </div>  
     <div class="container">
         <input type="text" placeholder="Search for country name" class="search">
-            <div class="countries" > 
+        <div class="countries" > 
         </div>
-        <div class="counModal show">
+        <div class="weather show">
         </div>         
     </div>
+    
     <script>
-        const ele=document.querySelector(".countries");
-        const s=document.querySelector(".search")
-        
-         fetch("https://restcountries.com/v2/all", {
-    method: "GET",
-  })
-    .then((data) => data.json())
-    .then((response) => {
+        const ele = document.querySelector(".countries");
+        const s = document.querySelector(".search")     
+        fetch("https://restcountries.com/v2/all", {
+        method: "GET",
+        })
+        .then((data) => data.json())
+        .then((response) => {
         //console.log(response) 
         Display(response)  
-    })
-    .catch((error) => {
-      console.log(error);
+        })
+        .catch((error) => {
+        console.log(error);
     }); 
-
-//  Fetch data with an ID
-function Display(data){
-    for (let i=0;i<data.length;i++){
-        const country=document.createElement('div')
-    country.classList.add('country')
-    country.innerHTML=
+    function Display(data){
+        for (let i=0;i<data.length;i++){
+            const country = document.createElement('div')
+            country.classList.add('country')
+            country.innerHTML =
                 `<div class="card" style="width: 18rem;">
-                    <div class="c-image">
-                        <img src="${data[i].flags.png}" style="width: 100%;" style="height: fit-content;" alt="...">
-                    </div>   
+                <div class="c-image">
+                    <img src="${data[i].flags.png}" style="width: 100%;" style="height: fit-content;" alt="...">
+                </div>   
                 <div class="card-body"> 
-                  <h3 class="card-title country1">${data[i].name}</h3>
-                  <h5 class="card-title cap"><strong>Capital : </strong>${data[i].capital}</h5>
-                  <h5 class="card-title"><strong>Population : </strong>${data[i].population}</h5>
-                  <h5 class="card-title "><strong>Region : </strong>${data[i].region}</h5> 
+                    <h3 class="card-title country_name">${data[i].name}</h3>
+                    <h5 class="card-title cap"><strong>Capital : </strong>${data[i].capital}</h5>
+                    <h5 class="card-title"><strong>Population : </strong>${data[i].population}</h5>
+                    <h5 class="card-title "><strong>Region : </strong>${data[i].region}</h5> 
                  </div> `
             ele.appendChild(country)  
             country.addEventListener('click',()=>{
                 showTemp(data[i].flags.png,data[i].capital)  
             })
-    }
-} 
-const country1=document.getElementsByClassName('country1')  
-s.addEventListener("input",()=>{
-    console.log(s.value)
-    Array.from(country1).forEach(elem=>{
+        }
+    } 
+    const cn = document.getElementsByClassName('country_name')  
+    s.addEventListener("input",()=>{
+    //console.log(s.value)
+    Array.from(cn).forEach(elem=>{
         //console.log(elem.innerText)
         if(elem.innerText.toLowerCase().includes(s.value.toLowerCase() )){
              elem.parentElement.parentElement.style.display='grid'
@@ -129,51 +129,44 @@ s.addEventListener("input",()=>{
             elem.parentElement.parentElement.style.display='none'
         }
     })
-})   
-
-const cm= document.querySelector(".counModal");  
-const c2= document.querySelector(".countries"); 
-
-function showTemp(d1,z){
-    console.log(z)
-    console.log(d1)
-   fetch('https://api.openweathermap.org/data/2.5/weather?q='+z+'&APPID=f91209be8a493464978749060bcfa6e0', 
-    {
-    method: "GET",
-  })
+    })   
+    const w = document.querySelector(".weather");  
+    function showTemp(d1,z){
+    // console.log(z)
+    // console.log(d1)
+    fetch('https://api.openweathermap.org/data/2.5/weather?q='+z+'&APPID=f91209be8a493464978749060bcfa6e0', 
+    { method: "GET", })
     .then((data) => data.json())
     .then((response) => {
         //console.log(response) 
-        d(response)  
+        temp(response)  
     })
     .catch((error) => {
       console.log(error);
     }); 
-    cm.classList.toggle('show')
-
-    function d(data){ 
-        cm.innerHTML=`
-        <button class="back">back</button>
-        <div class="m">
+    w.classList.toggle('show')
+    function temp(data){ 
+        w.innerHTML =
+            `<button class="back">back</button>
+            <div class="m">
                 <div class="lm">
                     <img src="${d1}" style="width: 100%;" style="height: fit-content;" alt="...">
-                 </div>
-                <div class="rm">
-                  <h3 class="card-title"><strong>Capital : </strong>${data['name']}</h3> 
-                  <h5 class="card-title"><strong>Weather : </strong>${data['weather'][0].main}</h5>
-                  <h5 class="card-title"><strong>Temperature : </strong>${data['main'].temp}</h5> 
-                  <h5 class="card-title"><strong>Minimun Temperature : </strong>${data['main'].temp_min}</h5> 
-                  <h5 class="card-title"><strong>Maximum Temperature : </strong>${data['main'].temp_max}</h5> 
-                  <h5 class="card-title"><strong>Description : </strong>${data['weather'][0].description}</h5> 
                 </div>
-            </div> `
-            const back=cm.querySelector(".back");
+                <div class="rm">
+                    <h3 class="card-title"><strong>Capital : </strong>${data['name']}</h3> 
+                    <h5 class="card-title"><strong>Weather : </strong>${data['weather'][0].main}</h5>
+                    <h5 class="card-title"><strong>Description : </strong>${data['weather'][0].description}</h5> 
+                    <h5 class="card-title"><strong>Temperature : </strong>${data['main'].temp}</h5> 
+                    <h5 class="card-title"><strong>Minimun Temperature : </strong>${data['main'].temp_min}</h5> 
+                    <h5 class="card-title"><strong>Maximum Temperature : </strong>${data['main'].temp_max}</h5> 
+                </div>
+            </div>`
+            const back = w.querySelector(".back");
             back.addEventListener('click',()=>{
-            cm.classList.toggle('show')     
+            w.classList.toggle('show')     
             }) 
         }  
-    } 
-    
+    }   
     </script>
     <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-Fy6S3B9q64WdZWQUiU+q4/2Lc9npb8tCaSX9FK7E8HnRr0Jz8D6OP9dO5Vg3Q9ct" crossorigin="anonymous"></script>    
